@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    environment {
+        TF_VERSION = "0.15.0"
+        AWS_DEFAULT_REGION = "us-east-1"
+    }
+
+    stages {
+        stage('Build Infrastructure') {
+            steps {
+                script {
+                    // Download and install Terraform
+                    sh '''
+                        curl -o terraform.zip -L https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+                        unzip terraform.zip
+                        chmod +x terraform
+                    '''
+                    // Initialize and apply Terraform configuration
+                    sh './terraform init'
+                    sh './terraform validate'
+                    sh './terraform plan -out=tfplan'
+                    sh './terraform apply -auto-approve tfplan'
+                }
+            }
+        }
+        stage('Process Webhook') {
+            steps {
+                script {
+                    def requestBody = httpRequest requestBody: true
+                    def command = requestBody.command
+                    
+                    if (command == 'start') {
+                        sh 'aws ec2 start-instances --instance-ids instance-id'
+                    } else if (command == 'stop') {
+                        sh 'aws ec2 stop-instances --instance-ids instance-id'
+                    } else if (command == 'terminate') {
+                        sh 'aws ec2 terminate-instances --instance-ids instance-id'
+                    } else {
+                        error "Invalid command: ${command}"
+                    }
+                }
+            }
+        }
+    }
+}
