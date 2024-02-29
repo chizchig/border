@@ -36,5 +36,5 @@ resource "local_sensitive_file" "key" {
   depends_on = [tls_private_key.rr]
   content    = tls_private_key.rr.private_key_pem
   filename   = "i-key"
-  
+
 }
