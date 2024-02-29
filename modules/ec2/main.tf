@@ -9,6 +9,13 @@ resource "aws_instance" "database_instance" {
   subnet_id              = aws_subnet.internal_subnets[each.key].id
   vpc_security_group_ids = [aws_security_group.aurora_sg.id]
 
+  root_block_device {
+    volume_size           = "100"
+    volume_type           = "gp2"
+    encrypted             = true
+    delete_on_termination = true
+  }
+
   connection {
     type        = "ssh"
     user        = "ec2-user"
