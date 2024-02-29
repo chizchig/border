@@ -1,14 +1,14 @@
 ##               [source,shell]
 ##  Replace `start` with `stop` or `terminate` as needed.
 
-----
-curl -X POST -d '{"command":"start"}' https://your-webhook-endpoint-url
-----
+#----
+##curl -X POST -d '{"command":"start"}' https://your-webhook-endpoint-url
+#----
 
-----
-curl -X POST -d '{"command":"stop"}' https://your-webhook-endpoint-url
-----
+#----
+##curl -X POST -d '{"command":"stop"}' https://your-webhook-endpoint-url
+#----
 
-----
-curl -X POST -d '{"command":"terminate"}' https://your-webhook-endpoint-url
-----
+#----
+##curl -X POST -d '{"command":"terminate"}' https://your-webhook-endpoint-url
+#----
