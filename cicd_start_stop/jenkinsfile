@@ -29,13 +29,14 @@ pipeline {
                 script {
                     def requestBody = httpRequest requestBody: true
                     def command = requestBody.command
+                    def instanceId = "your-instance-id-here" // Replace with actual instance ID
                     
                     if (command == 'start') {
-                        sh 'aws ec2 start-instances --instance-ids instance-id'
+                        sh "aws ec2 start-instances --instance-ids ${instanceId}"
                     } else if (command == 'stop') {
-                        sh 'aws ec2 stop-instances --instance-ids instance-id'
+                        sh "aws ec2 stop-instances --instance-ids ${instanceId}"
                     } else if (command == 'terminate') {
-                        sh 'aws ec2 terminate-instances --instance-ids instance-id'
+                        sh "aws ec2 terminate-instances --instance-ids ${instanceId}"
                     } else {
                         error "Invalid command: ${command}"
                     }
