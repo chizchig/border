@@ -4,6 +4,11 @@ pipeline {
     environment {
         TF_VERSION = "0.15.0"
         AWS_DEFAULT_REGION = "us-east-1"
+        INSTANCE_ID = "aws_instance.database_instance.id"
+    }
+
+    triggers {
+        pollSCM('*/5 * * * *') // Polls the SCM (source control management) every 5 minutes
     }
 
     stages {
@@ -21,6 +26,10 @@ pipeline {
                     sh './terraform validate'
                     sh './terraform plan -out=tfplan'
                     sh './terraform apply -auto-approve tfplan'
+
+                    // Retrieve the instance ID from Terraform output
+                    def instanceId = sh(script: './terraform output -raw instance_id', returnStdout: true).trim()
+                    env.INSTANCE_ID = instanceId // Set it as an environment variable for later use
                 }
             }
         }
@@ -29,7 +38,7 @@ pipeline {
                 script {
                     def requestBody = httpRequest requestBody: true
                     def command = requestBody.command
-                    def instanceId = "your-instance-id-here" // Replace with actual instance ID
+                    def instanceId = env.INSTANCE_ID // Retrieve instance ID from environment
                     
                     if (command == 'start') {
                         sh "aws ec2 start-instances --instance-ids ${instanceId}"
