@@ -2,7 +2,7 @@ terraform {
   backend "remote" {
     organization = "the_hub"
     workspaces {
-      name = "unicorn"
+      name = "border"
     }
   }
   required_providers {
@@ -13,3 +13,4 @@ terraform {
     # skip_credentials_validation = true
   }
 }
+
