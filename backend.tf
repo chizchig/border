@@ -2,7 +2,7 @@ terraform {
   backend "remote" {
     organization = "the_hub"
     workspaces {
-      name = "golden_workspace"
+      name = "unicorn"
     }
   }
   required_providers {
