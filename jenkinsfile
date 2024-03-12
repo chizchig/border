@@ -15,13 +15,12 @@ pipeline {
         stage('Build Infrastructure') {
             steps {
                 script {
-                    // Download and install Terraform
+                        // Download and install Terraform
                     sh '''
                         curl -o terraform.zip -L https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
                         unzip terraform.zip
                         chmod +x terraform
-                    '''
-                    // Initialize and apply Terraform configuration
+                    '''                    // Initialize and apply Terraform configuration
                     sh './terraform init'
                     sh './terraform validate'
                     sh './terraform plan -out=tfplan'
