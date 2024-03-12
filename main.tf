@@ -13,43 +13,43 @@ module "vpc" {
   egress_rules                = var.egress_rules
 }
 
-resource "aws_iam_role" "dbec2_role" {
-  name = "example-role"
+# resource "aws_iam_role" "dbec2_role" {
+#   name = "example-role"
   
-  assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "ec2.amazonaws.com"
-        },
-        "Action" : "sts:AssumeRole"
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     "Version" : "2012-10-17",
+#     "Statement" : [
+#       {
+#         "Effect" : "Allow",
+#         "Principal" : {
+#           "Service" : "ec2.amazonaws.com"
+#         },
+#         "Action" : "sts:AssumeRole"
+#       }
+#     ]
+#   })
+# }
 
-resource "aws_iam_policy" "dbec2_policy" {
-  name        = "dbec2-policy"
-  description = "Policy allowing EC2 instance creation"
+# resource "aws_iam_policy" "dbec2_policy" {
+#   name        = "dbec2-policy"
+#   description = "Policy allowing EC2 instance creation"
 
-  policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": "ec2:RunInstances",
-        "Resource": "*"
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     "Version": "2012-10-17",
+#     "Statement": [
+#       {
+#         "Effect": "Allow",
+#         "Action": "ec2:RunInstances",
+#         "Resource": "*"
+#       }
+#     ]
+#   })
+# }
 
-resource "aws_iam_role_policy_attachment" "dbec2_attachment" {
-  role       = aws_iam_role.dbec2_role.name
-  policy_arn = aws_iam_policy.dbec2_policy.arn
-}
+# resource "aws_iam_role_policy_attachment" "dbec2_attachment" {
+#   role       = aws_iam_role.dbec2_role.name
+#   policy_arn = aws_iam_policy.dbec2_policy.arn
+# }
 
 resource "aws_instance" "database_instance" {
   count = 1
@@ -58,7 +58,7 @@ resource "aws_instance" "database_instance" {
   instance_type = local.instances["database_instance0"].instance_type
   subnet_id              = module.vpc.subnet_ids[0]
   vpc_security_group_ids = module.vpc.security_group_id
-  iam_instance_profile   = aws_iam_role.dbec2_role.name
+  # iam_instance_profile   = aws_iam_role.dbec2_role.name
 
   tags = {
     Name = "database_instance0"
