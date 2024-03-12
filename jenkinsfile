@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     // Make an HTTP POST request to the webhook URL with a JSON payload
-                    def webhookUrl = 'http://54.91.90.223:8080/'   // Always remember to add webhooklink
+                    def webhookUrl = 'http://35.153.157.220:8080/'   // Always remember to add webhooklink
                     def payload = '{"command": "start"}'
                     
                     // Execute curl command to make the HTTP request
