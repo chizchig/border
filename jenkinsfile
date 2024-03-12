@@ -14,9 +14,29 @@ pipeline {
     stages {
         stage('Configure AWS Credentials') {
             steps {
-                sh 'aws configure'
+                script {
+                    // Retrieve AWS credentials from Git secret
+                    def awsCreds = sh(script: 'git secret reveal', returnStdout: true).trim()
+
+                    // Extract AWS access key and secret access key from credentials
+                    def awsAccessKey = awsCreds =~ /AWS_ACCESS_KEY_ID=(.*)/ ? awsCreds[0][1] : ''
+                    def awsSecretKey = awsCreds =~ /AWS_SECRET_ACCESS_KEY=(.*)/ ? awsCreds[0][1] : ''
+
+                    // Set AWS credentials as environment variables
+                    withCredentials([
+                        usernamePassword(credentialsId: 'tempAwsCreds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')
+                    ]) {
+                        // Configure AWS CLI with retrieved credentials
+                        sh """
+                            aws configure set aws_access_key_id \${AWS_ACCESS_KEY_ID}
+                            aws configure set aws_secret_access_key \${AWS_SECRET_ACCESS_KEY}
+                            aws configure set default.region ${AWS_DEFAULT_REGION}
+                        """
+                    }
+                }
             }
         }
+
         stage('Build Infrastructure') {
             steps {
                 script {
@@ -41,11 +61,12 @@ pipeline {
                 }
             }
         }
+
         stage('Process Webhook') {
             steps {
                 script {
                     // Make an HTTP POST request to the webhook URL with a JSON payload
-                    def webhookUrl = 'http://54.91.90.223:8080/'
+                    def webhookUrl = 'http://34.226.217.76:8080/'
                     def payload = '{"command": "start"}'
 
                     // Execute curl command to make the HTTP request
@@ -53,6 +74,7 @@ pipeline {
                 }
             }
         }
+
         stage('Control Instance') {
             steps {
                 script {
