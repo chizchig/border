@@ -2,13 +2,13 @@
 ##  Replace `start` with `stop` or `terminate` as needed.
 
 ----
-curl -X POST -d '{"command":"start"}' https://your-webhook-endpoint-url
+aws ec2 start-instances --instance-ids i-xxxxxxxxx
 ----
 
 ----
-curl -X POST -d '{"command":"stop"}' https://your-webhook-endpoint-url
+aws ec2 stop-instances --instance-ids i-xxxxxxxxx
 ----
 
 ----
-curl -X POST -d '{"command":"terminate"}' https://your-webhook-endpoint-url
+aws ec2 terminate-instances --instance-ids i-xxxxxxxxx
 ----
