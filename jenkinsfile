@@ -45,28 +45,28 @@ pipeline {
                 }
             }
         }
-        stage('Control Instance') {
-            steps {
-                script {
-                    def instanceId = env.INSTANCE_ID
-                    def action = input(
-                        message: 'Select an action for the EC2 instance',
-                        ok: 'Execute',
-                        parameters: [
-                            choice(choices: ['start', 'stop', 'terminate'], description: 'Action', name: 'ACTION')
-                        ]
-                    )
+    //     stage('Control Instance') {
+    //         steps {
+    //             script {
+    //                 def instanceId = env.INSTANCE_ID
+    //                 def action = input(
+    //                     message: 'Select an action for the EC2 instance',
+    //                     ok: 'Execute',
+    //                     parameters: [
+    //                         choice(choices: ['start', 'stop', 'terminate'], description: 'Action', name: 'ACTION')
+    //                     ]
+    //                 )
 
-                    if (action == 'start') {
-                        sh "aws ec2 start-instances --instance-ids ${instanceId}"
-                    } else if (action == 'stop') {
-                        sh "aws ec2 stop-instances --instance-ids ${instanceId}"
-                    } else if (action == 'terminate') {
-                        sh "aws ec2 terminate-instances --instance-ids ${instanceId}"
-                    }
-                }
-            }
-        }
-    }
+    //                 if (action == 'start') {
+    //                     sh "aws ec2 start-instances --instance-ids ${instanceId}"
+    //                 } else if (action == 'stop') {
+    //                     sh "aws ec2 stop-instances --instance-ids ${instanceId}"
+    //                 } else if (action == 'terminate') {
+    //                     sh "aws ec2 terminate-instances --instance-ids ${instanceId}"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
   
