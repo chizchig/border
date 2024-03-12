@@ -18,7 +18,7 @@ pipeline {
                     // Download and install Terraform
                     sh '''
                         curl -o terraform.zip -L https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-                        unzip terraform.zip
+                        unzip -o terraform.zip
                         chmod +x terraform
                     '''
                     // Initialize and apply Terraform configuration
