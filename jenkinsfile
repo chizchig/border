@@ -29,6 +29,9 @@ pipeline {
 
                     // Retrieve the instance ID from Terraform output
                     def instanceId = sh(script: './terraform output -raw instance_id', returnStdout: true).trim()
+
+                    // Start the instance
+                    sh "aws ec2 start-instances --instance-ids ${instanceId}"
                     env.INSTANCE_ID = instanceId // Set it as an environment variable for later use
                 }
             }
@@ -37,36 +40,33 @@ pipeline {
             steps {
                 script {
                     // Make an HTTP POST request to the webhook URL with a JSON payload
-                    def webhookUrl = 'http://35.153.157.220:8080/'   // Always remember to add 
+                    def webhookUrl = 'http://54.91.90.223:8080/'
                     def payload = '{"command": "start"}'
-                    
+
                     // Execute curl command to make the HTTP request
                     sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${webhookUrl}"
                 }
             }
         }
-        // stage('Control Instance') {
-        //     steps {
-        //         script {
-        //             def instanceId = env.INSTANCE_ID
-        //             def action = input(
-        //                 message: 'Select an action for the EC2 instance',
-        //                 ok: 'Execute',
-        //                 parameters: [
-        //                     choice(choices: ['start', 'stop', 'terminate'], description: 'Action', name: 'ACTION')
-        //                 ]
-        //             )
+        stage('Control Instance') {
+            steps {
+                script {
+                    def instanceId = env.INSTANCE_ID
+                    def action = input(
+                        message: 'Select an action for the EC2 instance',
+                        ok: 'Execute',
+                        parameters: [
+                            choice(choices: ['stop', 'terminate'], description: 'Action', name: 'ACTION')
+                        ]
+                    )
 
-        //             if (action == 'start') {
-        //                 sh "aws ec2 start-instances --instance-ids ${instanceId}"
-        //             } else if (action == 'stop') {
-        //                 sh "aws ec2 stop-instances --instance-ids ${instanceId}"
-        //             } else if (action == 'terminate') {
-        //                 sh "aws ec2 terminate-instances --instance-ids ${instanceId}"
-        //             }
-        //         }
-        //     }
-        // }
+                    if (action == 'stop') {
+                        sh "aws ec2 stop-instances --instance-ids ${instanceId}"
+                    } else if (action == 'terminate') {
+                        sh "aws ec2 terminate-instances --instance-ids ${instanceId}"
+                    }
+                }
+            }
+        }
     }
 }
-  
