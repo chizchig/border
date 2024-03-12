@@ -46,7 +46,7 @@ resource "aws_iam_policy" "dbec2_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "example_attachment" {
+resource "aws_iam_role_policy_attachment" "dbec2_attachment" {
   role       = aws_iam_role.dbec2_role.name
   policy_arn = aws_iam_policy.dbec2_policy.arn
 }
